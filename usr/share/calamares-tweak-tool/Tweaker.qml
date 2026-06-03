@@ -9,7 +9,7 @@ Window {
     visible: true
     title: "Calamares Tweak Tool"
     width: 720
-    height: 640
+    height: 700
     color: win.t.bgBottom
 
     // ── Themes (day/night + swatches, ported from kiro-keybindings) ─────
