@@ -168,6 +168,29 @@ Window {
                 color: win.t.warn; font.pixelSize: 12
             }
 
+            // ── Encryption reminder (visually apparent) ─────────────────
+            Rectangle {
+                Layout.fillWidth: true
+                visible: backend.configExists
+                radius: 12
+                border.width: 2
+                color: backend.encryption ? "#0C2A14" : "#3A1E12"
+                border.color: backend.encryption ? win.t.accentB : win.t.warn
+                implicitHeight: reminderText.implicitHeight + 26
+                Text {
+                    id: reminderText
+                    anchors { left: parent.left; right: parent.right; verticalCenter: parent.verticalCenter; margins: 16 }
+                    wrapMode: Text.WordWrap
+                    horizontalAlignment: Text.AlignHCenter
+                    font.pixelSize: 14
+                    font.bold: true
+                    color: backend.encryption ? win.t.accentB : win.t.warn
+                    text: backend.encryption
+                          ? "Encryption ON — don't forget to tick “Encrypt system” and set a passphrase in the installer."
+                          : "⚠  Encryption is OFF — turn the switch on, or the installer won't offer to encrypt."
+                }
+            }
+
             // ── Actions ─────────────────────────────────────────────────
             RowLayout {
                 Layout.fillWidth: true

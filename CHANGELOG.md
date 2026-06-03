@@ -11,15 +11,20 @@ loop. v1 scope is the encryption ↔ bootloader pairing only.
 Same-day refinements:
 - Packaged as **`kiro-calamares-tweak-tool`** (kiro- prefix per the package-naming
   convention); the binary and `/usr/share` paths stay unprefixed `calamares-tweak-tool`.
-- **Selecting a bootloader now switches the "Encrypt system" option on** — it's off in
-  the shipped config and enabling it is the whole point of the tool, so the radio
-  selection no longer silently leaves encryption disabled (still toggleable off).
 - **Menu visibility:** dropped `NoDisplay=true` from the `.desktop` so the tool actually
   appears in the application menu (`Categories=System;Settings;Utility;`).
 - **Correct launch command:** the Launch button now runs
   `/usr/bin/calamares_polkit -d -style kvantum` (the exact `cal-kiro.desktop` command,
   via the `calamares_polkit` wrapper = `pkexec --disable-internal-agent calamares`),
   instead of a bare `pkexec calamares` that skipped the wrapper and the KiroDark style.
+- **Encryption is independent of the bootloader.** The bootloader still derives the LUKS
+  *version* (luks1/luks2), but the encryption switch alone drives
+  `enableLuksAutomatedPartitioning` — it's no longer auto-forced on when a bootloader is
+  picked (that briefly left it stuck on `true`).
+- **Visually-apparent encryption reminder** banner above the buttons so the setting isn't
+  forgotten: amber when OFF ("Encryption is OFF — turn the switch on, or the installer
+  won't offer to encrypt"), green when ON ("don't forget to tick 'Encrypt system' + set a
+  passphrase in the installer").
 
 ### Technical Details
 - **`confedit.py`** — `CalamaresConfig` reads/writes `bootloader.conf` (`efiBootLoader`)
