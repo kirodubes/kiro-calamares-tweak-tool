@@ -5,7 +5,7 @@ Comment=Dev/expert: set Calamares encryption + bootloader before installing
 Exec=sh -c "pkexec calamares-tweak-tool"
 Icon=calamares
 Terminal=false
-Categories=System;Settings;
+Categories=System;Settings;Utility;
 Keywords=calamares;installer;luks;encryption;bootloader;
 # Dev/expert tool — kept off the default live desktop on purpose. Launch from a
 # terminal (calamares-tweak-tool) or unset NoDisplay on a dev ISO to surface it.
