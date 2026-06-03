@@ -11,7 +11,7 @@ Installer-side sibling of ATT. Design summary: `~/calamares-tweak-tool.md`.
   files with comment-preserving line edits. Pure, no Qt — unit-testable.
 - `usr/share/calamares-tweak-tool/Tweaker.qml` — the UI.
 - `usr/share/calamares-tweak-tool/sample/` — bundled sample `/etc/calamares` for `--dev`.
-- `usr/share/applications/*.desktop` — `NoDisplay=true` (dev-hidden on purpose).
+- `usr/share/applications/*.desktop` — visible menu entry (Categories System;Settings;Utility).
 
 ## Conventions
 - Python: ruff clean, max line 120.
@@ -28,11 +28,13 @@ Apply is disabled and a banner says so. `--config-dir` on a writable copy needs 
 (this is how it's tested). A self-elevating writer is possible later but out of v1.
 
 ## Packaging / placement
-App repo lives in `~/KIRO-ISO-CALAMARES/calamares-tweak-tool` (with the other
-Calamares/ISO repos), `kirodubes` org, baked into the live ISO airootfs (installer-only
-side), NOT nemesis_repo (that's for post-install user apps). PKGBUILD recipe is in
-`~/KIRO-PKG-BUILD-CALAMARES/calamares-tweak-tool`; runtime deps: `pyside6`, `polkit`.
-Built into `kiro_repo` via that recipe's `build.sh` (build.sh auto-bumps pkgrel).
+Package name is **`kiro-calamares-tweak-tool`** (kiro- prefix); binary + `/usr/share`
+paths stay unprefixed `calamares-tweak-tool`. App repo: `~/KIRO-ISO-CALAMARES/kiro-
+calamares-tweak-tool` (with the other Calamares/ISO repos), `kirodubes` org, baked into
+the live ISO airootfs (installer-only side), NOT nemesis_repo. PKGBUILD recipe:
+`~/KIRO-PKG-BUILD-CALAMARES/kiro-calamares-tweak-tool` (dir name must match pkgname for
+build.sh's glob); runtime deps `pyside6`, `polkit`. Built into `kiro_repo` via that
+recipe's `build.sh` (build.sh auto-bumps pkgrel).
 
 ## Status
 v1 — encryption ↔ bootloader pairing. v2 backlog (filesystem, swap, kernel params,

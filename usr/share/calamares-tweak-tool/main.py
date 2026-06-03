@@ -90,8 +90,17 @@ class Backend(QObject):
 
     @Slot(str)
     def setBootloader(self, value):
-        if value in BOOTLOADERS and value != self._bootloader:
-            self._bootloader = value
+        if value not in BOOTLOADERS:
+            return
+        changed = value != self._bootloader
+        self._bootloader = value
+        # Picking a bootloader also switches the "Encrypt system" option on — it's off
+        # in the shipped config, and the whole reason to open this tool is to enable it,
+        # so the selection shouldn't silently leave encryption disabled.
+        if not self._encryption:
+            self._encryption = True
+            changed = True
+        if changed:
             self.stateChanged.emit()
 
     @Slot(bool)

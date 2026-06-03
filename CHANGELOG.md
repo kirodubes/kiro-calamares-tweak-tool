@@ -8,6 +8,15 @@ Kiro live ISO that edits the Calamares encryption + bootloader settings before t
 installer is launched, collapsing the "rebuild the ISO to test a one-line config change"
 loop. v1 scope is the encryption ↔ bootloader pairing only.
 
+Same-day refinements:
+- Packaged as **`kiro-calamares-tweak-tool`** (kiro- prefix per the package-naming
+  convention); the binary and `/usr/share` paths stay unprefixed `calamares-tweak-tool`.
+- **Selecting a bootloader now switches the "Encrypt system" option on** — it's off in
+  the shipped config and enabling it is the whole point of the tool, so the radio
+  selection no longer silently leaves encryption disabled (still toggleable off).
+- **Menu visibility:** dropped `NoDisplay=true` from the `.desktop` so the tool actually
+  appears in the application menu (`Categories=System;Settings;Utility;`).
+
 ### Technical Details
 - **`confedit.py`** — `CalamaresConfig` reads/writes `bootloader.conf` (`efiBootLoader`)
   and `partition.conf` (`luksGeneration`, `enableLuksAutomatedPartitioning`) with
