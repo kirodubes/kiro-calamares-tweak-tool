@@ -1,0 +1,12 @@
+[Desktop Entry]
+Type=Application
+Name=Calamares Tweak Tool
+Comment=Dev/expert: set Calamares encryption + bootloader before installing
+Exec=sh -c "pkexec calamares-tweak-tool"
+Icon=calamares
+Terminal=false
+Categories=System;Settings;
+Keywords=calamares;installer;luks;encryption;bootloader;
+# Dev/expert tool — kept off the default live desktop on purpose. Launch from a
+# terminal (calamares-tweak-tool) or unset NoDisplay on a dev ISO to surface it.
+NoDisplay=true
