@@ -13,9 +13,9 @@ LUKS_FOR = {"grub": "luks1", "systemd-boot": "luks2"}
 BOOTLOADERS = ("systemd-boot", "grub")
 
 # Root filesystem choices. btrfs is fully wired in mount.conf (subvolume layout +
-# zstd); ext4/xfs/jfs use the `default` mountOptions entry. The live ISO must ship the
-# matching mkfs (xfsprogs/jfsutils) and kernel module, or a non-ext4 install fails.
-FILESYSTEMS = ("ext4", "xfs", "jfs", "btrfs")
+# zstd); ext4/xfs use the `default` mountOptions entry. jfs was dropped — it triggers a
+# noisy logredo/fsck on boot and is the least-maintained of the lot.
+FILESYSTEMS = ("ext4", "xfs", "btrfs")
 
 
 def _get_scalar(text, key):
