@@ -25,11 +25,17 @@ Same-day refinements:
   forgotten: amber when OFF ("Encryption is OFF — turn the switch on, or the installer
   won't offer to encrypt"), green when ON ("don't forget to tick 'Encrypt system' + set a
   passphrase in the installer").
-- **v2 — filesystem dropdown:** a ComboBox sets the root `defaultFileSystemType` and locks
-  `availableFileSystemTypes` to the same single choice — **ext4 / xfs / jfs / btrfs**.
+- **v2 — filesystem dropdown:** a ComboBox sets the root `defaultFileSystemType` —
+  **ext4 / xfs / jfs / btrfs**. (The config was simplified to keep only that one key;
+  `availableFileSystemTypes` was removed, so CTT no longer writes it.)
   btrfs reuses the subvolume layout + zstd already wired in `mount.conf`; the other three
   use the `default` mountOptions. All four mkfs tools (e2fsprogs / xfsprogs / jfsutils /
-  btrfs-progs) confirmed present on the ISO pkglist.
+  btrfs-progs) confirmed present on the ISO pkglist. FILESYSTEM card sits at the top
+  (foundational disk choice) above BOOTLOADER and ENCRYPTION.
+- **Themes (day/night) ported from kiro-keybindings:** a ☾/☀ mode toggle + swatch picker
+  in the header, 7 dark + 7 light palettes (Kiro/Arc/Nord/Dracula/Gruvbox/Catppuccin/Neon/
+  Solarized), choice persisted via `Settings`. CTT's semantic `warn`/`danger` colours and
+  the tinted LUKS/reminder boxes are now mode-derived so they read correctly in both.
 
 ### Technical Details
 - **`confedit.py`** — `CalamaresConfig` reads/writes `bootloader.conf` (`efiBootLoader`)

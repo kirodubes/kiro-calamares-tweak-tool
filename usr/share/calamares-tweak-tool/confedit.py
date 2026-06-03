@@ -65,7 +65,7 @@ class CalamaresConfig:
 
     def apply(self, bootloader, encryption, filesystem):
         """Write the bootloader, the derived luksGeneration, the encryption switch, and the
-        root filesystem (default + available locked to the single chosen type)."""
+        root defaultFileSystemType (the only filesystem key the simplified config keeps)."""
         if bootloader not in BOOTLOADERS:
             raise ValueError(f"unknown bootloader: {bootloader}")
         if filesystem not in FILESYSTEMS:
@@ -78,12 +78,10 @@ class CalamaresConfig:
         pt, nl = _set_scalar(pt, "luksGeneration", self.derived_luks(bootloader))
         pt, ne = _set_scalar(pt, "enableLuksAutomatedPartitioning", "true" if encryption else "false")
         pt, nd = _set_scalar(pt, "defaultFileSystemType", f'"{filesystem}"')
-        pt, na = _set_scalar(pt, "availableFileSystemTypes", f'["{filesystem}"]')
 
         missing = [k for k, n in (("efiBootLoader", nb), ("luksGeneration", nl),
                                   ("enableLuksAutomatedPartitioning", ne),
-                                  ("defaultFileSystemType", nd),
-                                  ("availableFileSystemTypes", na)) if n == 0]
+                                  ("defaultFileSystemType", nd)) if n == 0]
         if missing:
             raise KeyError(f"settings not found in config: {', '.join(missing)}")
 
