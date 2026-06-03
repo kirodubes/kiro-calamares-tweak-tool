@@ -25,6 +25,11 @@ Same-day refinements:
   forgotten: amber when OFF ("Encryption is OFF — turn the switch on, or the installer
   won't offer to encrypt"), green when ON ("don't forget to tick 'Encrypt system' + set a
   passphrase in the installer").
+- **v2 — filesystem dropdown:** a ComboBox sets the root `defaultFileSystemType` and locks
+  `availableFileSystemTypes` to the same single choice — **ext4 / xfs / jfs / btrfs**.
+  btrfs reuses the subvolume layout + zstd already wired in `mount.conf`; the other three
+  use the `default` mountOptions. All four mkfs tools (e2fsprogs / xfsprogs / jfsutils /
+  btrfs-progs) confirmed present on the ISO pkglist.
 
 ### Technical Details
 - **`confedit.py`** — `CalamaresConfig` reads/writes `bootloader.conf` (`efiBootLoader`)

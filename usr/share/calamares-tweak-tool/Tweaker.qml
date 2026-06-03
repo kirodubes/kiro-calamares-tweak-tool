@@ -8,7 +8,7 @@ Window {
     visible: true
     title: "Calamares Tweak Tool"
     width: 720
-    height: 560
+    height: 640
     color: t.bgBottom
 
     // ── Kiro dark palette (shared with kiro-keybindings) ────────────────
@@ -72,6 +72,35 @@ Window {
                     anchors.centerIn: parent
                     text: "No Calamares config found at " + backend.configDir + "  —  try --dev for the bundled sample"
                     color: win.t.danger; font.pixelSize: 13
+                }
+            }
+
+            // ── Filesystem ──────────────────────────────────────────────
+            Rectangle {
+                Layout.fillWidth: true
+                color: win.t.cardBg; border.color: win.t.cardBorder; border.width: 1; radius: 14
+                implicitHeight: 64
+                enabled: backend.configExists
+                RowLayout {
+                    anchors { left: parent.left; right: parent.right; verticalCenter: parent.verticalCenter; margins: 16 }
+                    ColumnLayout {
+                        spacing: 1
+                        Text { text: "FILESYSTEM"; color: win.t.accentA; font.pixelSize: 12; font.bold: true; font.letterSpacing: 1.4 }
+                        Text { text: "root partition · defaultFileSystemType"; color: win.t.subtext; font.pixelSize: 12 }
+                    }
+                    Item { Layout.fillWidth: true }
+                    ComboBox {
+                        id: fsCombo
+                        Layout.preferredWidth: 160
+                        model: backend.filesystems
+                        currentIndex: Math.max(0, backend.filesystems.indexOf(backend.filesystem))
+                        onActivated: backend.setFilesystem(currentText)
+                        contentItem: Text {
+                            text: fsCombo.displayText
+                            color: win.t.desc; font.pixelSize: 15
+                            leftPadding: 12; verticalAlignment: Text.AlignVCenter
+                        }
+                    }
                 }
             }
 
