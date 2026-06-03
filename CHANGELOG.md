@@ -38,6 +38,11 @@ Same-day refinements:
   in the header, 7 dark + 7 light palettes (Kiro/Arc/Nord/Dracula/Gruvbox/Catppuccin/Neon/
   Solarized), choice persisted via `Settings`. CTT's semantic `warn`/`danger` colours and
   the tinted LUKS/reminder boxes are now mode-derived so they read correctly in both.
+- **Prominent "Saved" confirmation.** The save result used to be a tiny grey status line
+  that was easy to miss. It's now a centered green pill (brand green `accentB`, a ✓ glyph,
+  bigger bold text) that **pulses on every Apply** — a one-shot scale-up + flash so even a
+  re-save with identical settings visibly blinks. Only `Saved:` messages get the pill;
+  other statuses (`Failed:`, `Launching…`, read-only) stay as the plain subtle line.
 
 ### Technical Details
 - **`confedit.py`** — `CalamaresConfig` reads/writes `bootloader.conf` (`efiBootLoader`)

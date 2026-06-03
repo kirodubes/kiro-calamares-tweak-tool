@@ -55,6 +55,7 @@ Window {
     readonly property color warn: appSettings.mode === "dark" ? "#F59E0B" : "#B45309"
     readonly property color danger: appSettings.mode === "dark" ? "#F87171" : "#DC2626"
     readonly property bool isLuks2: backend.luksGeneration === "luks2"
+    readonly property bool savedNow: backend.status.indexOf("Saved:") === 0
 
     // Translucent tint of a colour over the card — works on light and dark.
     function tint(c, a) { return Qt.rgba(c.r, c.g, c.b, a) }
@@ -275,8 +276,68 @@ Window {
             Item { Layout.fillHeight: true }
 
             // ── Status ──────────────────────────────────────────────────
+            // Prominent green "saved" pill — centered, pulses on every Apply.
+            Rectangle {
+                id: savedPill
+                Layout.alignment: Qt.AlignHCenter
+                Layout.maximumWidth: parent.width
+                visible: win.savedNow
+                radius: height / 2
+                color: win.tint(win.t.accentB, 0.15)
+                border.width: 2
+                border.color: win.t.accentB
+                implicitWidth: savedRow.implicitWidth + 40
+                implicitHeight: savedRow.implicitHeight + 18
+
+                transform: Scale {
+                    id: pillScale
+                    origin.x: savedPill.width / 2
+                    origin.y: savedPill.height / 2
+                }
+
+                // Flash overlay (sits under the text); opacity is pulsed on save.
+                Rectangle {
+                    id: savedFlash
+                    anchors.fill: parent
+                    radius: parent.radius
+                    color: win.tint(win.t.accentB, 0.55)
+                    opacity: 0
+                }
+                Row {
+                    id: savedRow
+                    anchors.centerIn: parent
+                    spacing: 9
+                    Text {
+                        text: "✓"
+                        color: win.t.accentB
+                        font.pixelSize: 19; font.bold: true
+                        anchors.verticalCenter: parent.verticalCenter
+                    }
+                    Text {
+                        text: backend.status
+                        color: win.t.accentB
+                        font.pixelSize: 15; font.bold: true
+                        anchors.verticalCenter: parent.verticalCenter
+                    }
+                }
+
+                SequentialAnimation {
+                    id: savedPulse
+                    ParallelAnimation {
+                        NumberAnimation { target: pillScale; properties: "xScale,yScale"; to: 1.09; duration: 140; easing.type: Easing.OutQuad }
+                        NumberAnimation { target: savedFlash; property: "opacity"; from: 0.6; to: 0.0; duration: 650; easing.type: Easing.OutCubic }
+                    }
+                    NumberAnimation { target: pillScale; properties: "xScale,yScale"; to: 1.0; duration: 260; easing.type: Easing.OutBounce }
+                }
+                Connections {
+                    target: backend
+                    function onSaveTickChanged() { savedPulse.restart() }
+                }
+            }
+            // Plain subtle status for every non-saved message.
             Text {
                 Layout.fillWidth: true
+                visible: !win.savedNow
                 text: backend.status
                 color: win.t.subtext; font.pixelSize: 12
                 elide: Text.ElideRight

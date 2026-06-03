@@ -33,6 +33,7 @@ def _notify(msg):
 class Backend(QObject):
     stateChanged = Signal()
     statusChanged = Signal()
+    saveTickChanged = Signal()
 
     def __init__(self, config_dir):
         super().__init__()
@@ -41,6 +42,7 @@ class Backend(QObject):
         self._encryption = False
         self._filesystem = "ext4"
         self._status = ""
+        self._save_tick = 0
         self.reload()
 
     # ── exposed state ───────────────────────────────────────────────────
@@ -83,6 +85,10 @@ class Backend(QObject):
     @Property(str, notify=statusChanged)
     def status(self):
         return self._status
+
+    @Property(int, notify=saveTickChanged)
+    def saveTick(self):
+        return self._save_tick
 
     def _set_status(self, text):
         self._status = text
@@ -133,6 +139,8 @@ class Backend(QObject):
         enc = "on" if self._encryption else "off"
         msg = f"Saved: {self._bootloader} · {self._filesystem} · encryption {enc} · {luks}"
         self._set_status(msg)
+        self._save_tick += 1
+        self.saveTickChanged.emit()
         _notify(msg)
 
     @Slot()
