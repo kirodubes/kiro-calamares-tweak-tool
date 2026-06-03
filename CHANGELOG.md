@@ -26,9 +26,10 @@ Same-day refinements:
   won't offer to encrypt"), green when ON ("don't forget to tick 'Encrypt system' + set a
   passphrase in the installer").
 - **v2 — filesystem dropdown:** a ComboBox sets the root `defaultFileSystemType` —
-  **ext4 / xfs / btrfs**. (The config was simplified to keep only that one key;
-  `availableFileSystemTypes` was removed, so CTT no longer writes it. jfs was dropped —
-  it triggered a noisy logredo/fsck on boot and is the least-maintained option.)
+  **ext4 / xfs / jfs / btrfs**. (The config was simplified to keep only that one key;
+  `availableFileSystemTypes` was removed, so CTT no longer writes it. jfs is legacy/niche
+  and was briefly pulled — the logredo/fsck it showed traced to unclean-shutdown debugging,
+  not jfs itself — so it's kept: this is an expert tool, the choice is the user's.)
   btrfs reuses the subvolume layout + zstd already wired in `mount.conf`; the others
   use the `default` mountOptions. All four mkfs tools (e2fsprogs / xfsprogs / jfsutils /
   btrfs-progs) confirmed present on the ISO pkglist. FILESYSTEM card sits at the top
