@@ -17,7 +17,10 @@ from PySide6.QtQml import QQmlApplicationEngine
 
 DEFAULT_CONFIG_DIR = "/etc/calamares"
 SAMPLE_CONFIG_DIR = Path(__file__).resolve().parent / "sample" / "etc" / "calamares"
-LAUNCH_CMD = ["sh", "-c", "pkexec calamares"]  # mirrors the live ISO's calamares.desktop
+# Mirror the Kiro live launcher exactly (cal-kiro.desktop): the calamares_polkit
+# wrapper runs `pkexec --disable-internal-agent /usr/bin/calamares`, and -d -style
+# kvantum give the debug session.log + the KiroDark theme.
+LAUNCH_CMD = ["/usr/bin/calamares_polkit", "-d", "-style", "kvantum"]
 
 
 def _notify(msg):

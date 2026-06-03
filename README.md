@@ -38,8 +38,8 @@ calamares-tweak-tool --dev           # edit the bundled sample config (runs anyw
 calamares-tweak-tool --config-dir /path/to/etc/calamares
 ```
 
-The **Launch installer** button runs `pkexec calamares`, exactly like the live ISO's
-own launcher.
+The **Launch installer** button runs `/usr/bin/calamares_polkit -d -style kvantum` —
+exactly the same command as the Kiro live launcher (`cal-kiro.desktop`).
 
 ## Status
 

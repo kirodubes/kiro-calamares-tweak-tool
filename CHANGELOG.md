@@ -16,6 +16,10 @@ Same-day refinements:
   selection no longer silently leaves encryption disabled (still toggleable off).
 - **Menu visibility:** dropped `NoDisplay=true` from the `.desktop` so the tool actually
   appears in the application menu (`Categories=System;Settings;Utility;`).
+- **Correct launch command:** the Launch button now runs
+  `/usr/bin/calamares_polkit -d -style kvantum` (the exact `cal-kiro.desktop` command,
+  via the `calamares_polkit` wrapper = `pkexec --disable-internal-agent calamares`),
+  instead of a bare `pkexec calamares` that skipped the wrapper and the KiroDark style.
 
 ### Technical Details
 - **`confedit.py`** — `CalamaresConfig` reads/writes `bootloader.conf` (`efiBootLoader`)
