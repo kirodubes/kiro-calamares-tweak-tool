@@ -61,6 +61,11 @@ Same-day refinements:
 - Toolkit is PySide6/Qt6 (matches kiro-keybindings): Calamares already pulls the Qt6
   runtime onto the live ISO, so CTT only adds the binding layer.
 - Dev-hidden `.desktop` (`NoDisplay=true`) — kept off the default live desktop.
+- **Saved-pill pulse** is driven by a `saveTick` int property on `Backend`, incremented +
+  emitted on each successful `apply()`. QML restarts a `SequentialAnimation` on
+  `onSaveTickChanged`, so the pulse re-fires even when the saved text is unchanged (a plain
+  text-change trigger would not). The flash uses an opacity-pulsed overlay `Rectangle` so
+  the pill's `color` binding stays intact across theme switches.
 
 ### Files Modified
 - `usr/share/calamares-tweak-tool/confedit.py`
