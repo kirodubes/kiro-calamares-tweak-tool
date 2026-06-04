@@ -1,5 +1,21 @@
 # Changelog
 
+## 2026.06.04
+
+### What Changed
+The window/titlebar icon (top-left corner of the window border drawn by the WM) is now
+the Kiro **K** logo instead of the generic default — the app never set a window icon.
+
+### Technical Details
+`main.py` now calls `app.setWindowIcon(QIcon(...))` with the existing
+`assets/logo.png` (the same Kiro K already shown in the in-app header). Imported `QIcon`
+alongside `QGuiApplication`, and hoisted the `here = Path(__file__)...` line above the
+`QGuiApplication` construction so the icon path is available when the app is created and
+before any window is shown.
+
+### Files Modified
+- `usr/share/calamares-tweak-tool/main.py`
+
 ## 2026.06.03
 
 ### What Changed

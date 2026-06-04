@@ -12,7 +12,7 @@ from pathlib import Path
 
 from confedit import BOOTLOADERS, FILESYSTEMS, CalamaresConfig
 from PySide6.QtCore import Property, QObject, QUrl, Signal, Slot
-from PySide6.QtGui import QGuiApplication
+from PySide6.QtGui import QGuiApplication, QIcon
 from PySide6.QtQml import QQmlApplicationEngine
 
 DEFAULT_CONFIG_DIR = "/etc/calamares"
@@ -162,12 +162,14 @@ def main():
 
     config_dir = SAMPLE_CONFIG_DIR if args.dev else Path(args.config_dir)
 
+    here = Path(__file__).resolve().parent
+
     app = QGuiApplication(sys.argv)
     app.setOrganizationName("kiro")
     app.setApplicationName("calamares-tweak-tool")
+    app.setWindowIcon(QIcon(str(here / "assets" / "logo.png")))
     backend = Backend(config_dir)
 
-    here = Path(__file__).resolve().parent
     engine = QQmlApplicationEngine()
     ctx = engine.rootContext()
     ctx.setContextProperty("backend", backend)
