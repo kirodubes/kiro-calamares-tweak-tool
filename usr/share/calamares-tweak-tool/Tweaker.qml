@@ -367,7 +367,7 @@ Window {
                     font.bold: true
                     color: backend.encryption ? win.t.accentB : win.warn
                     text: backend.encryption
-                          ? "Encryption ON — don't forget to tick “Encrypt system” and set a passphrase in the installer."
+                          ? "Encryption ON — don't forget to tick “Encrypt system”\nand set a passphrase in the installer."
                           : "⚠  Encryption is OFF — turn the switch on, or the installer won't offer to encrypt."
                 }
             }
