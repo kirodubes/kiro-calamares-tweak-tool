@@ -267,8 +267,8 @@ Window {
                         wrapMode: Text.WordWrap
                         color: win.t.desc; font.pixelSize: 13
                         text: win.isLuks2
-                              ? "systemd-boot decrypts via the initramfs → LUKS2/Argon2id is safe and stronger."
-                              : "GRUB can't unlock LUKS2/Argon2id → forced to LUKS1 so the system still boots."
+                              ? "LUKS2/Argon2id — the stronger generation. Both GRUB (2.14+) and systemd-boot unlock it at boot."
+                              : "LUKS1 — older generation, kept only as a fallback."
                     }
                 }
             }

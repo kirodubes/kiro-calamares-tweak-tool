@@ -5,10 +5,11 @@ import os
 import re
 from pathlib import Path
 
-# The v1 invariant: the LUKS generation is a function of the bootloader, never a free
-# choice. GRUB on stock Arch can't decrypt LUKS2+Argon2id → luks1. systemd-boot loads
-# from the unencrypted ESP and the initramfs decrypts root → luks2 (Argon2id, stronger).
-LUKS_FOR = {"grub": "luks1", "systemd-boot": "luks2"}
+# LUKS generation per bootloader. Both are luks2 now: GRUB 2.14 (Arch grub 2:2.14-1, Jan
+# 2026) added Argon2i/Argon2id KDF support, so GRUB unlocks LUKS2/Argon2id — proven on real
+# BIOS (worf) and UEFI (picard) installs 2026-06-05. systemd-boot always could (initramfs
+# decrypts). The old grub→luks1 forcing is gone; kept as a dict for clarity/future tweaks.
+LUKS_FOR = {"grub": "luks2", "systemd-boot": "luks2"}
 
 BOOTLOADERS = ("systemd-boot", "grub")
 
@@ -49,7 +50,7 @@ class CalamaresConfig:
 
     @staticmethod
     def derived_luks(bootloader):
-        return LUKS_FOR.get(bootloader, "luks1")
+        return LUKS_FOR.get(bootloader, "luks2")
 
     def read(self):
         """Current state as {bootloader, luksGeneration, encryption, filesystem}."""

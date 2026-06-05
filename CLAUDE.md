@@ -15,9 +15,10 @@ Installer-side sibling of ATT. Design summary: `~/calamares-tweak-tool.md`.
 
 ## Conventions
 - Python: ruff clean, max line 120.
-- **The v1 invariant** is `LUKS_FOR` in `confedit.py` — LUKS generation is always a
-  function of the bootloader, never a free choice. Don't add a direct LUKS picker; that
-  reintroduces the LUKS2-on-stock-GRUB footgun this tool exists to prevent.
+- **LUKS generation** is `LUKS_FOR` in `confedit.py`, keyed by bootloader. As of 2026-06-05
+  both bootloaders map to **luks2**: GRUB 2.14 unlocks LUKS2/Argon2id (proven on real BIOS +
+  UEFI installs — see the nemesis fork's `GRUB+LUKS2.md`), so the old grub→luks1 forcing is
+  retired. Still don't add a free per-LUKS picker — keep it derived from the bootloader.
 - Never YAML-round-trip the conf files — they're heavily commented. Use `_set_scalar`.
 - Brand colors: blue `#0195F7`, green `#2FC328`; dark bg `#0F172A`/`#020617`.
 

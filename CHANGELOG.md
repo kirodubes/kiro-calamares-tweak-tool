@@ -1,5 +1,30 @@
 # Changelog
 
+## 2026.06.05
+
+### What Changed
+Relaxed the LUKS invariant: **both bootloaders now map to `luks2`** (`LUKS_FOR = {"grub":
+"luks2", "systemd-boot": "luks2"}`). The tool used to force `grub → luks1` on the premise
+that GRUB couldn't decrypt LUKS2/Argon2id — that premise is obsolete as of GRUB 2.14.
+
+### Technical Details
+- **`confedit.py`** — `LUKS_FOR` grub value `luks1 → luks2`; `derived_luks` fallback default
+  `luks1 → luks2`. Proven on real BIOS (*worf*) and UEFI (*picard*) installs 2026-06-05:
+  GRUB 2.14 (Arch `grub 2:2.14-1`) unlocks LUKS2/Argon2id at boot. Full write-up lives in
+  the experimental fork (`kiro-calamares-tweak-tool-nemesis/GRUB+LUKS2.md`), which added the
+  `force_luks2` override used to run the tests.
+- **`Tweaker.qml`** — LUKS readout text updated; the old "GRUB can't unlock LUKS2 → forced
+  to LUKS1" / "systemd-boot decrypts…" lines are gone (both inaccurate now). LUKS2 reads
+  "the stronger generation. Both GRUB (2.14+) and systemd-boot unlock it at boot."
+- Kept the bootloader→LUKS derivation structure; still no free per-LUKS picker.
+- Paired with the `kiro-calamares-config` change the same day (`luksGeneration: luks2` +
+  empty `defaultPartitionTableType`).
+
+### Files Modified
+- `usr/share/calamares-tweak-tool/confedit.py`
+- `usr/share/calamares-tweak-tool/Tweaker.qml`
+- `CLAUDE.md`, `CHANGELOG.md`
+
 ## 2026.06.04
 
 ### What Changed
