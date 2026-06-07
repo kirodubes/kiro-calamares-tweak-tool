@@ -1,8 +1,7 @@
 #!/usr/bin/env python
 """Calamares Tweak Tool — a dev/expert PySide6 panel that flips the live ISO's
-Calamares encryption + bootloader settings before you launch the installer. v1 pairs
-the bootloader with the only safe LUKS generation, so an unbootable combo (luks2 on
-stock GRUB) is impossible by construction."""
+Calamares encryption + bootloader settings before you launch the installer. Encryption
+uses LUKS2/Argon2id, which both GRUB (2.14+) and systemd-boot unlock at boot."""
 import argparse
 import os
 import shutil
@@ -154,13 +153,21 @@ class Backend(QObject):
 
 def main():
     ap = argparse.ArgumentParser(prog="calamares-tweak-tool")
-    ap.add_argument("--config-dir", default=DEFAULT_CONFIG_DIR,
-                    help=f"Calamares config root to edit (default {DEFAULT_CONFIG_DIR})")
-    ap.add_argument("--dev", action="store_true",
-                    help="edit the bundled sample config instead (launches/inspects anywhere)")
+    ap.add_argument("--config-dir", default=None,
+                    help=f"Calamares config root to edit (default {DEFAULT_CONFIG_DIR}, "
+                         "or the bundled sample under --sample)")
+    ap.add_argument("--sample", action="store_true",
+                    help="edit the bundled sample config instead of /etc/calamares "
+                         "(inspect/test the UI off the live ISO, no root needed)")
     args = ap.parse_args()
 
-    config_dir = SAMPLE_CONFIG_DIR if args.dev else Path(args.config_dir)
+    # --config-dir always wins; --sample targets the bundled copy; otherwise the live config.
+    if args.config_dir is not None:
+        config_dir = Path(args.config_dir)
+    elif args.sample:
+        config_dir = SAMPLE_CONFIG_DIR
+    else:
+        config_dir = Path(DEFAULT_CONFIG_DIR)
 
     here = Path(__file__).resolve().parent
 

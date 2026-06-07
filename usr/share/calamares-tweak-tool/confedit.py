@@ -5,10 +5,8 @@ import os
 import re
 from pathlib import Path
 
-# LUKS generation per bootloader. Both are luks2 now: GRUB 2.14 (Arch grub 2:2.14-1, Jan
-# 2026) added Argon2i/Argon2id KDF support, so GRUB unlocks LUKS2/Argon2id — proven on real
-# BIOS (worf) and UEFI (picard) installs 2026-06-05. systemd-boot always could (initramfs
-# decrypts). The old grub→luks1 forcing is gone; kept as a dict for clarity/future tweaks.
+# LUKS generation is luks2 for both bootloaders: GRUB 2.14+ and systemd-boot both unlock
+# LUKS2/Argon2id at boot (proven on real BIOS + UEFI installs). Argon2id is the stronger KDF.
 LUKS_FOR = {"grub": "luks2", "systemd-boot": "luks2"}
 
 BOOTLOADERS = ("systemd-boot", "grub")
@@ -59,7 +57,7 @@ class CalamaresConfig:
         bootloader = _get_scalar(bt, "efiBootLoader") or "systemd-boot"
         return {
             "bootloader": bootloader,
-            "luksGeneration": _get_scalar(pt, "luksGeneration") or "luks1",
+            "luksGeneration": _get_scalar(pt, "luksGeneration") or "luks2",
             "encryption": (_get_scalar(pt, "enableLuksAutomatedPartitioning") or "false").lower() == "true",
             "filesystem": _get_scalar(pt, "defaultFileSystemType") or "ext4",
         }

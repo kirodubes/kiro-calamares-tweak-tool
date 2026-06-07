@@ -9,7 +9,7 @@ Window {
     visible: true
     title: "Calamares Tweak Tool"
     width: 720
-    height: 700
+    height: 670
     color: win.t.bgBottom
 
     // ── Themes (day/night + swatches, ported from kiro-keybindings) ─────
@@ -54,7 +54,6 @@ Window {
     // Semantic colours are mode-derived (not per-theme): amber warning, red danger.
     readonly property color warn: appSettings.mode === "dark" ? "#F59E0B" : "#B45309"
     readonly property color danger: appSettings.mode === "dark" ? "#F87171" : "#DC2626"
-    readonly property bool isLuks2: backend.luksGeneration === "luks2"
     readonly property bool savedNow: backend.status.indexOf("Saved:") === 0
 
     // Translucent tint of a colour over the card — works on light and dark.
@@ -246,12 +245,12 @@ Window {
                 }
             }
 
-            // ── Derived LUKS readout (the guard, made visible) ──────────
+            // ── LUKS readout ────────────────────────────────────────────
             Rectangle {
                 Layout.fillWidth: true
                 radius: 14; border.width: 1
-                color: win.tint(win.isLuks2 ? win.t.accentB : win.warn, 0.13)
-                border.color: win.isLuks2 ? win.t.accentB : win.warn
+                color: win.tint(win.t.accentB, 0.13)
+                border.color: win.t.accentB
                 implicitHeight: 70
                 opacity: backend.encryption ? 1.0 : 0.5
                 RowLayout {
@@ -259,16 +258,14 @@ Window {
                     spacing: 14
                     Text {
                         text: backend.luksGeneration.toUpperCase()
-                        color: win.isLuks2 ? win.t.accentB : win.warn
+                        color: win.t.accentB
                         font.pixelSize: 24; font.bold: true
                     }
                     Text {
                         Layout.fillWidth: true
                         wrapMode: Text.WordWrap
                         color: win.t.desc; font.pixelSize: 13
-                        text: win.isLuks2
-                              ? "LUKS2/Argon2id — the stronger generation. Both GRUB (2.14+) and systemd-boot unlock it at boot."
-                              : "LUKS1 — older generation, kept only as a fallback."
+                        text: "Both GRUB (2.14+) and systemd-boot unlock LUKS2/Argon2id at boot — the stronger KDF."
                     }
                 }
             }
