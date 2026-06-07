@@ -1,5 +1,33 @@
 # Changelog
 
+## 2026.06.07
+
+### What Changed
+Tidied the tool now that LUKS is luks2 for both bootloaders: the LUKS readout collapsed to
+a single truthful line (no more luks1 branch), the window was trimmed, and the dev flag was
+renamed `--dev → --sample`. Fixed the stale `--dev` references the rename left behind,
+including the on-screen "no config found" hint that pointed at the now-removed flag.
+
+### Technical Details
+- **`main.py`** — `--dev` renamed to `--sample`; `--config-dir` default is now `None` with
+  explicit resolution (`--config-dir` wins → `--sample` → live `/etc/calamares`). Module
+  docstring rewritten (LUKS2/Argon2id, both bootloaders unlock it).
+- **`confedit.py`** — `LUKS_FOR` both `luks2`; `read()` luksGeneration fallback `luks1 →
+  luks2`; header comment simplified.
+- **`Tweaker.qml`** — window `height 700 → 670`; removed the `isLuks2` helper and the
+  luks1 branch; the LUKS readout is one line: "Both GRUB (2.14+) and systemd-boot unlock
+  LUKS2/Argon2id at boot — the stronger KDF." The "no config found" hint now says
+  `--sample`.
+- **`README.md`, `CLAUDE.md`, `usr/bin/calamares-tweak-tool`** — `--dev → --sample` in the
+  usage examples / comments.
+
+### Files Modified
+- `usr/share/calamares-tweak-tool/main.py`
+- `usr/share/calamares-tweak-tool/confedit.py`
+- `usr/share/calamares-tweak-tool/Tweaker.qml`
+- `usr/bin/calamares-tweak-tool`
+- `README.md`, `CLAUDE.md`, `CHANGELOG.md`
+
 ## 2026.06.05
 
 ### What Changed
