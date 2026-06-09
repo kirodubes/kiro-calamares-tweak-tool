@@ -10,15 +10,17 @@ Installer-side sibling of ATT. Design summary: `~/calamares-tweak-tool.md`.
 - `usr/share/calamares-tweak-tool/confedit.py` — `CalamaresConfig`: read/write the conf
   files with comment-preserving line edits. Pure, no Qt — unit-testable.
 - `usr/share/calamares-tweak-tool/Tweaker.qml` — the UI.
-- `usr/share/calamares-tweak-tool/sample/` — bundled sample `/etc/calamares` for `--sample`.
+- `usr/share/calamares-tweak-tool/sample/` — bundled sample `/etc/calamares` for `--dev`.
 - `usr/share/applications/*.desktop` — visible menu entry (Categories System;Settings;Utility).
 
 ## Conventions
 - Python: ruff clean, max line 120.
-- **LUKS generation** is `LUKS_FOR` in `confedit.py`, keyed by bootloader. As of 2026-06-05
-  both bootloaders map to **luks2**: GRUB 2.14 unlocks LUKS2/Argon2id (proven on real BIOS +
-  UEFI installs — see the nemesis fork's `GRUB+LUKS2.md`), so the old grub→luks1 forcing is
-  retired. Still don't add a free per-LUKS picker — keep it derived from the bootloader.
+- **LUKS generation is `luks2` for both bootloaders** (`LUKS_FOR` in `confedit.py`). The
+  NEMESIS experiment that motivated this fork is concluded: GRUB 2.14 (Arch `grub
+  2:2.14-1`, 2026-01-16) unlocks LUKS2/Argon2id, proven on real BIOS + UEFI installs, so
+  the old grub→luks1 premise is dead. The `force_luks2` override / "Force LUKS2 on GRUB"
+  card was removed once that was proven — don't reintroduce it, and don't reintroduce any
+  luks1 path or a free LUKS picker.
 - Never YAML-round-trip the conf files — they're heavily commented. Use `_set_scalar`.
 - Brand colors: blue `#0195F7`, green `#2FC328`; dark bg `#0F172A`/`#020617`.
 

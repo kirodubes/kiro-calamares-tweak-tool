@@ -50,6 +50,7 @@ that GRUB couldn't decrypt LUKS2/Argon2id — that premise is obsolete as of GRU
 
 ### Files Modified
 - `usr/share/calamares-tweak-tool/confedit.py`
+- `usr/share/calamares-tweak-tool/main.py`
 - `usr/share/calamares-tweak-tool/Tweaker.qml`
 - `CLAUDE.md`, `CHANGELOG.md`
 
