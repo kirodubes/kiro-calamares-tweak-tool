@@ -3,24 +3,28 @@
 ## 2026.06.11
 
 ### What Changed
-Fixed **Calamares Tweak Tool not launching from the desktop menu** (first seen on a
-Budgie/Wayland VM). The `.desktop` ran `Exec=sudo calamares-tweak-tool` with
-`Terminal=false`: a menu launch has no TTY and no askpass, so `sudo`'s password prompt
-had nowhere to appear and the launch died silently — it only worked off a cached sudo
-ticket (run once in a terminal, then the menu works until the ticket expires, then
-breaks again). Switched to polkit escalation (`pkexec`) — the same mechanism the tool
-already uses to launch Calamares itself (`calamares_polkit`) and the same one ATT uses —
-so the desktop's polkit agent shows a graphical password dialog from the menu in every
-session type.
+Fixed **Calamares Tweak Tool not launching from the desktop menu** (found on the live
+Budgie/Wayland ISO). The `.desktop` ran `Exec=sudo calamares-tweak-tool` with
+`Terminal=false`. Bare `sudo` from a menu launch fails two ways: on a normal install it
+has no TTY/askpass for the password prompt (so it only worked off a cached sudo ticket —
+run once in a terminal, menu works until the ticket expires, then breaks again); and on
+the live ISO, where `liveuser` has passwordless sudo, `sudo`'s `env_reset` strips
+`DISPLAY`/`WAYLAND_DISPLAY`/`XAUTHORITY`, so the Qt app can't reach the display.
+`/etc/calamares` is `root:root`, so escalation is genuinely required (liveuser is uid
+1000, not root). Switched to polkit (`pkexec`) — the mechanism the tool already uses to
+launch Calamares (`calamares_polkit`) and the one ATT uses — passing the display env
+through explicitly.
 
 ### Technical Details
 - **`usr/share/applications/calamares-tweak-tool.desktop`** — dropped `sudo`; now
   `Exec=calamares-tweak-tool`.
-- **`usr/bin/calamares-tweak-tool`** — wrapper runs directly if already root (live ISO /
-  `sudo -E`); otherwise re-execs via `pkexec env …` passing the display through. Branches
-  on session: **Wayland** passes `WAYLAND_DISPLAY`/`XDG_RUNTIME_DIR` +
-  `QT_QPA_PLATFORM="wayland;xcb"` (Wayland with XWayland fallback); **X11** passes only
-  `DISPLAY`/`XAUTHORITY` with no platform forcing — zero behavioural change on X11.
+- **`usr/bin/calamares-tweak-tool`** — runs directly if already root (`sudo -E`);
+  otherwise `pkexec env …`. Branches on session: **Wayland** forces
+  `QT_QPA_PLATFORM=wayland` + `LIBGL_ALWAYS_SOFTWARE=1` (PySide6 bundles the Qt wayland
+  plugin) with no xcb/XWayland fallback — as root xcb has no X cookie and coredumps, and
+  the VM's EGL leaves the window unpainted; mirrors ATT's proven Wayland recipe. **X11**
+  passes only `DISPLAY`/`XAUTHORITY`, Qt's default xcb backend — zero behavioural change
+  on X11. Verified as root on the live Budgie/Wayland ISO (`wayland`+software-GL ran clean).
 
 ### Files Modified
 - `usr/share/applications/calamares-tweak-tool.desktop`
