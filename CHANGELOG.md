@@ -19,12 +19,17 @@ through explicitly.
 - **`usr/share/applications/calamares-tweak-tool.desktop`** — dropped `sudo`; now
   `Exec=calamares-tweak-tool`.
 - **`usr/bin/calamares-tweak-tool`** — runs directly if already root (`sudo -E`);
-  otherwise `pkexec env …`. Branches on session: **Wayland** forces
-  `QT_QPA_PLATFORM=wayland` + `LIBGL_ALWAYS_SOFTWARE=1` (PySide6 bundles the Qt wayland
-  plugin) with no xcb/XWayland fallback — as root xcb has no X cookie and coredumps, and
-  the VM's EGL leaves the window unpainted; mirrors ATT's proven Wayland recipe. **X11**
-  passes only `DISPLAY`/`XAUTHORITY`, Qt's default xcb backend — zero behavioural change
-  on X11. Verified as root on the live Budgie/Wayland ISO (`wayland`+software-GL ran clean).
+  otherwise escalates via `pkexec env …`. Two menu-launch bugs, both proven on the live
+  Budgie/Wayland ISO via the real `gtk-launch` path:
+  **(1)** the wrapper must **not** `exec` pkexec — a menu launcher (gtk-launch/budgie)
+  fires and exits immediately, so with `exec` pkexec's parent is already dead and it aborts
+  with *"Refusing to render service to dead parents"*; keeping the shell alive as pkexec's
+  parent fixes it (the reason ATT avoids `exec` too). **(2)** Wayland is detected by
+  `$XDG_SESSION_TYPE` / the `wayland-0` socket, not just `$WAYLAND_DISPLAY` — a menu launch
+  may not propagate that var, dropping the app onto the X11 branch. Wayland branch forces
+  `QT_QPA_PLATFORM=wayland` + `LIBGL_ALWAYS_SOFTWARE=1`, no xcb fallback (as root xcb has no
+  X cookie and coredumps; VM EGL leaves the window unpainted). X11 branch passes only
+  `DISPLAY`/`XAUTHORITY`, default xcb — zero behavioural change on X11.
 
 ### Files Modified
 - `usr/share/applications/calamares-tweak-tool.desktop`
