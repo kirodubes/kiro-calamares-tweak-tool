@@ -1,5 +1,31 @@
 # Changelog
 
+## 2026.06.11
+
+### What Changed
+Fixed **Calamares Tweak Tool not launching from the desktop menu** (first seen on a
+Budgie/Wayland VM). The `.desktop` ran `Exec=sudo calamares-tweak-tool` with
+`Terminal=false`: a menu launch has no TTY and no askpass, so `sudo`'s password prompt
+had nowhere to appear and the launch died silently — it only worked off a cached sudo
+ticket (run once in a terminal, then the menu works until the ticket expires, then
+breaks again). Switched to polkit escalation (`pkexec`) — the same mechanism the tool
+already uses to launch Calamares itself (`calamares_polkit`) and the same one ATT uses —
+so the desktop's polkit agent shows a graphical password dialog from the menu in every
+session type.
+
+### Technical Details
+- **`usr/share/applications/calamares-tweak-tool.desktop`** — dropped `sudo`; now
+  `Exec=calamares-tweak-tool`.
+- **`usr/bin/calamares-tweak-tool`** — wrapper runs directly if already root (live ISO /
+  `sudo -E`); otherwise re-execs via `pkexec env …` passing the display through. Branches
+  on session: **Wayland** passes `WAYLAND_DISPLAY`/`XDG_RUNTIME_DIR` +
+  `QT_QPA_PLATFORM="wayland;xcb"` (Wayland with XWayland fallback); **X11** passes only
+  `DISPLAY`/`XAUTHORITY` with no platform forcing — zero behavioural change on X11.
+
+### Files Modified
+- `usr/share/applications/calamares-tweak-tool.desktop`
+- `usr/bin/calamares-tweak-tool`
+
 ## 2026.06.09
 
 ### What Changed
